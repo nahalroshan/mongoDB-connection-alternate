@@ -19,9 +19,16 @@ app.get("/books", (req, res) => {
   const db = getDb(); // Get the database object
   const books = [];
 
+  const page = req.query.p || 0
+  const booksPerPage = 3
+
+
+
   db.collection("books")
     .find()
     .sort({ author: 1 })
+    .skip(page * booksPerPage) //skipping pages(pagination)
+    .limit(booksPerPage) // limiting books per page
     .forEach((book) => books.push(book))
     .then(() => {
       res.status(200).json(books);
